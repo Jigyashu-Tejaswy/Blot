@@ -3,6 +3,7 @@ import { createWebSerialBuffer } from "./createWebSerialBuffer.js";
 const TERMINATOR = 0x0A;
 
 export async function createWebSerialPort(rawPort) {
+  console.log("createWebSerialPort", rawPort);
   const buffer = await createWebSerialBuffer(rawPort);
 
   const msgHandlers = {};
