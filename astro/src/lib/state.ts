@@ -42,6 +42,7 @@ export type GlobalState = {
   needsSaving: boolean
   machineRunning: boolean
   loginName: string
+  sessionKey: string
 }
 
 // setting/initializing state
@@ -64,7 +65,8 @@ const newState: Omit<GlobalState, 'code'> = {
   fileHandle: null,
   needsSaving: false,
   machineRunning: false,
-  loginName: ""
+  loginName: "",
+  sessionKey: ""
 }
 
 export const makeNewState = (): GlobalState => {

@@ -18,6 +18,8 @@ export function init() {
   const view = cm.view
   patchStore({ view })
 
+  checkCurrentUser();
+
   addLoadBackup()
   // load src if present after default loading behavior
   addSrcURLParam()
@@ -77,4 +79,27 @@ export function init() {
   })
 
   document.body.dataset.theme = theme
+}
+
+
+async function checkCurrentUser() {
+  sessionStorage.setItem('session_secret_key', "00000");
+
+  const sessionKey = sessionStorage.getItem('session_secret_key');
+
+  if (sessionKey) {
+    patchStore({ sessionKey });
+
+    const loginEmail = await fetch("/api/currentUser", {
+      headers: { 
+        'Content-Type': 'application/json',
+        "Authentication": sessionKey
+      },
+    }).then(res => res.json());
+
+    console.log(loginEmail);
+  } else {
+
+  }
+
 }
