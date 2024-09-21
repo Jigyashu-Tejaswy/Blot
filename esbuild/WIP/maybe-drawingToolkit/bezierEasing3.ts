@@ -1,12 +1,4 @@
-import { Point } from '../types'
-
-function calculateBezierPoint(
-  t: number,
-  p0: Point,
-  p1: Point,
-  p2: Point,
-  p3: Point
-) {
+function calculateBezierPoint( t, p0, p1, p2, p3 ) {
   let u = 1 - t
   let tt = t * t
   let uu = u * u
@@ -24,13 +16,7 @@ function calculateBezierPoint(
   return p
 }
 
-function findTForGivenX(
-  xTarget: number,
-  p0: Point,
-  p1: Point,
-  p2: Point,
-  p3: Point
-) {
+function findTForGivenX( xTarget, p0, p1, p2, p3 ) {
   let tolerance = 0.00001
   let t = 0.5 // Start with approximate solution
   let iterations = 0
@@ -49,19 +35,14 @@ function findTForGivenX(
   return t // Return the approximate t value
 }
 
-function getYForX(x: number, p0: Point, p1: Point, p2: Point, p3: Point) {
+function getYForX(x, p0, p1, p2, p3) {
   let t = findTForGivenX(x, p0, p1, p2, p3)
   let p = calculateBezierPoint(t, p0, p1, p2, p3)
   return p[1]
 }
 
-export function bezierEasing(
-  initial: number,
-  p0: Point,
-  p1: Point,
-  final: number
-) {
-  return (x: number) =>
+export function bezierEasing( initial, p0, p1, final ) {
+  return (x) =>
     getYForX(
       x,
       [0, initial],
