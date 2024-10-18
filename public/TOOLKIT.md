@@ -1,42 +1,45 @@
 # The Toolkit  
 
-### Environment Affecting
+> This is a quick reference sheet. For <a href="/documentation">full documentation refer to this</a>.
+
+## Environment Affecting
 
 ```js
-setDocDimensions(width, height)
-drawLines(polylines, options = { fill, stroke, width })
+setDocDimensions(width: number, height: number)
+drawLines(polylines: [number, number][][])
 ```
 
-### Modify Polylines
+## Modify Polylines
+
+Take and modify polylines in place returns first passed polylines
+
 ```js
-// take and modify polylines return polylines
-iteratePoints(polylines0, (pt, t) => { ... } ) 
-scale(polylines0, scale : scaleXY | [scaleX, scaleY], ?origin: [ x, y ] ) 
-rotate(polylines0, degrees, ?origin: [ x, y ] ) 
-translate(polylines0, [dx, dy], ?origin: [ x, y ] ) 
+iteratePoints(polylines, (pt, t) => { ... }) // return pt to modify, "BREAK" to split, "REMOVE" to filter out point
+scale(polylines, scale : scaleXY | [scaleX, scaleY], ?origin: [ x, y ]) 
+rotate(polylines, degrees, ?origin: [ x, y ]) 
+translate(polylines, [dx, dy], ?origin: [ x, y ]) 
 originate(polylines) // moves center to [0, 0] 
-resample(polylines0, sampleRate ) 
-simplify(polylines0, ... ) 
-trim(polylines0, tStart, tEnd )
+resample(polylines, sampleRate) 
+simplify(polylines, ...) 
+trim(polylines, tStart, tEnd)
 merge(polylines)  
-join(polylines0, ...morePolylines ) 
-copy(polylines )
-cut(polylines0, polylines1 ) 
-cover(polylines0, polylines1 ) 
-union(polylines0, polylines1 )
-difference(polylines0, polylines1 )
-intersection(polylines0, polylines1 )
-xor(polylines0,polylines1 )
-
+join(polylines0, ...morePolylines) 
+copy(polylines)
+cut(polylines0, polylines1) 
+cover(polylines0, polylines1) 
+union(polylines0, polylines1)
+difference(polylines0, polylines1)
+intersection(polylines0, polylines1)
+xor(polylines0, polylines1)
 ```
 
-### Get Data From Polylines
+## Get Data From Polylines
 
 ```js
 // take polylines return other
-getAngle(polylines, t [0 to 1]) // returns angle in degrees
-getPoint(polylines, t [0 to 1]) // returns point as [x, y]
-getNormal(polylines, t [0 to 1]) // returns normal vector as [x, y]
+getAngle(polylines, t: [0 to 1]) // returns angle in degrees
+getPoint(polylines, t: [0 to 1]) // returns point as [x, y]
+getNormal(polylines, t: [0 to 1]) // returns normal vector as [x, y]
 
 pointInside(polylines, pt)
 
@@ -50,81 +53,94 @@ returns {
   lb, cb, rb,
   width, height
 }
+
+l is left
+c is center
+r is right
+t is top
+b is bottom
+
+they are arranged in this configuration around the bounding box of the polylines
+
+lt--ct--rt
+ |   |   |
+lc--cc--rc
+ |   |   | 
+lb--cb--rb
 */
 ```
 
-### Generate Polylines
+## Generate Polylines
 
 ```js
 const myTurtle = new Turtle()
   .forward(distance: number)
-  .arc(angle, radius)
-  .goTo( [ x, y ] ) // move with up/down state
-  .jump( [ x, y ] ) // move but don't draw
-  .right(angle)
-  .left(angle)
-  .setAngle(angle)
+  .arc(angle: number, radius: number)
+  .goTo( [ x: number, y: number ] ) // move with up/down state
+  .jump( [ x: number, y: number ] ) // move but don't draw
+  .right(angle: number)
+  .left(angle: number)
+  .setAngle(angle: number)
   .up() // sets drawing to false
   .down() // sets drawing to true
   .copy()
   .apply(fn) // takes (turtle) => { }
 
 // data
-const position = myTurtle.pos;
-const angle = myTurtle.angle;
-const path = myTurtle.path; // is array of polylines
-const drawing = myTurtle.drawing;
+const position = myTurtle.pos // [x: number, y: number]
+const angle = myTurtle.angle // number
+const path = myTurtle.path // is array of polylines [number, number][][]
+const drawing = myTurtle.drawing // boolean
 ```
 
 ```js
-catmullRom(points, steps = 1000)
-nurbs(points, ops = { steps: 100, degree: 2})
+catmullRom(points, steps = 1000) // returns polyline [number, number][]
+nurbs(points, ops = { steps: 100, degree: 2}) // returns polyline [number, number][]
 ```
 
 ```js
-// take other return polylines
-svgToPolylines(svgString)
+svgToPolylines(svg: string) // returns array of polylines [number, number][][]
 ```
 
-### Easing Curves
+## Easing Curves
 
 ```js
-bezierEasing(startY, controlPt0, controlPt1, endY)
+bezierEasing(startY, controlPt0, controlPt1, endY); // returns function which takes x (0 to 1) and returns y value
 ```
 
-### Randomness
+## Randomness
 
 ```js
-rand() 
+rand();
 
-randInRange(min: number, max: number) 
+randInRange(min: number, max: number);
 
-randIntInRange(min: number, max: number) 
+randIntInRange(min: number, max: number); 
 
-setRandSeed(seed: number) 
+setRandSeed(seed: number);
 
 noise(
-  [ x:number , ?y: number , ?z: number ], 
+  number | [ x:number , ?y: number , ?z: number ], 
   { 
     octaves: number [0 to 8], 
     falloff: number [0 to 100] 
   }
-)
+);
 ```
 
-### Idioms
+## Idioms
 
 Useful common patterns.
 
 <details>
-<summary>imports in one line</summary>
+<summary>Imports in One Line</summary>
 
 ```js
 // common imports
-const { Turtle, cut, cover, copy, rotate, scale, translate, originate, iteratePoints, resample, join, getAngle, getNormal, getPoint, bounds, svgToPolylines, rand, setRandSeed, randInRange, noise, bezierEasing } = toolkit;
+const { Turtle, cut, cover, copy, rotate, scale, translate, originate, iteratePoints, resample, join, getAngle, getNormal, getPoint, bounds, svgToPolylines, rand, setRandSeed, randInRange, noise, bezierEasing, nurbs } = toolkit;
 
 // all imports
-const { Turtle, trim, merge, cut, cover, rotate, scale, translate, originate, iteratePoints, pointInside, resample, join, copy, union, difference, intersection, xor, getAngle, getPoint, getNormal, bounds, svgToPolylines, rand, setRandSeed, randInRange, randIntInRange, noise, bezierEasing } = toolkit;
+const { Turtle, trim, merge, cut, cover, rotate, scale, translate, originate, iteratePoints, pointInside, resample, join, copy, union, difference, intersection, xor, getAngle, getPoint, getNormal, bounds, nurbs, catmullRom, svgToPolylines, rand, setRandSeed, randInRange, randIntInRange, noise, bezierEasing } = toolkit;
 
 ```
 </details>
@@ -142,7 +158,8 @@ setDocDimensions(w, h);
 
 const noisyCircle = new Turtle()
   .arc(360, 26)
-  .applyToPath(pls => {
+  .apply(turtle => {
+    const pls = turtle.path;
     resample(pls, .1);
     iteratePoints(pls, (pt, t) => {
       const [x, y] = pt;
@@ -156,7 +173,7 @@ const noisyCircle = new Turtle()
       ]
     })
   })
-  .polylines();
+  .path;
 
 originate(noisyCircle);
 
@@ -178,7 +195,8 @@ setDocDimensions(w, h);
 
 const noisyCircle = new Turtle()
   .arc(360, 26)
-  .applyToPath(pls => {
+  .apply(turtle => {
+    const pls = turtle.path;
     resample(pls, .05);
     iteratePoints(pls, (pt, t) => {
       const [x, y] = pt;
@@ -192,7 +210,7 @@ const noisyCircle = new Turtle()
       ]
     })
   })
-  .polylines();
+  .path;
 
 originate(noisyCircle);
 
@@ -245,81 +263,6 @@ function createPoissonDisc(radius) {
 </details>
 
 <details>
-<summary>Add methods to polylines</summary>
-
-```js
-function L(pls) {
-  const methods = {};
-  
-  [ "iteratePoints", "cut", "cover", "scale", "rotate", "translate", "originate", "resample", "simplify", "trim", "merge", "join", "union", "difference", "intersection", "xor", "svgToPolylines" ].forEach(name => {
-    methods[name] = (...args) => {
-      toolkit[name](pls, ...args);
-      return methods;
-    };
-  });
-
-  [ "getAngle", "getPoint", "getNormal", "bounds", "pointInside" ].forEach(name => {
-    methods[name] = (...args) => {
-      return toolkit[name](pls, ...args);
-    };
-  })
-
-  methods.copy = () => {
-    const copied = toolkit.copy(pls);
-    return L(copied);
-  }
-
-  methods.polylines = pls;
-  methods.draw = (...args) => {
-    drawLines(pls, ...args);
-    return methods;
-  }
-
-  return methods;
-}
-```
-</details>
-
-<details>
-<summary>Add methods to Turtle</summary>
-
-```js
-function createTurtle() {
-  const t = new toolkit.Turtle();
-  const pls = t.path;
-    
-  [ "iteratePoints", "cut", "cover", "scale", "rotate", "translate", "originate", "resample", "simplify", "trim", "merge", "join", "copy", "union", "difference", "intersection", "xor", "svgToPolylines" ].forEach(name => {
-    t[name] = (...args) => {
-      toolkit[name](
-        pls, 
-        ...args.map(x => x instanceof toolkit.Turtle ? x.path : x)
-      )
-      return t;
-    };
-  });
-
-  [ "getAngle", "getPoint", "getNormal", "bounds", "pointInside" ].forEach(name => {
-    t[name] = (...args) => {
-      return toolkit[name](pls, ...args);
-    };
-  })
-
-  t.draw = (...args) => {
-    drawLines(pls, ...args);
-    return t;
-  }
-
-  t.apply = (fn) => {
-    fn(t);
-    return t;
-  }
-  
-  return t;
-}
-```
-</details>
-
-<details>
 <summary>Circle</summary>
 
 ```js
@@ -329,7 +272,7 @@ function circle(r) {
   const cc = bounds(t.path).cc;
   translate(t.path, [0, 0], cc);
 
-  return t.polylines();
+  return t.path;
 }
 ```
 </details>
@@ -353,7 +296,7 @@ function rect(w, h) {
 </details>
 
 <details>
-<summary>length</summary>
+<summary>Length</summary>
 
 ```js
 function length([x0, y0], [x1, y1]) {
@@ -362,6 +305,10 @@ function length([x0, y0], [x1, y1]) {
 ```
 </details>
 
+<details>
+<summary>Hatching</summary>
 
-Hatching
+```js
+```
+</details>
 
